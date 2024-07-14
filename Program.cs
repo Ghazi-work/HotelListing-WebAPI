@@ -1,4 +1,20 @@
+using Serilog;
+using Serilog.Events;
+
+
+Log.Logger = new LoggerConfiguration()
+    .WriteTo.File(
+    path: "D:\\Practice\\hotellistings\\logs\\log-.txt",
+    outputTemplate: "{Timestamp:dd-MM-yyyy HH:mm:ss.fff zzz} [{Level:u3}] {Message:1j}{Newline}{Exception}{Newline}",
+    rollingInterval: RollingInterval.Day,
+    restrictedToMinimumLevel: LogEventLevel.Information
+    ).CreateLogger();
+
 var builder = WebApplication.CreateBuilder(args);
+
+// Add Serilog to the builder
+
+builder.Host.UseSerilog();
 
 // Add services to the container.
 
@@ -22,4 +38,19 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-app.Run();
+try
+{
+    Log.Information("Application is starting");
+    app.Run();
+
+
+}
+catch (Exception ex)
+{
+    Log.Fatal(ex, "Application failed to start");
+
+}
+finally
+{
+    Log.CloseAndFlush();
+}
