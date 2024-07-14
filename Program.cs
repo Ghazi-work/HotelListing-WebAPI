@@ -1,3 +1,5 @@
+using HotelListing.Data;
+using Microsoft.EntityFrameworkCore;
 using Serilog;
 using Serilog.Events;
 
@@ -11,6 +13,14 @@ Log.Logger = new LoggerConfiguration()
     ).CreateLogger();
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Connection with SQL server
+
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")
+
+    ));
 
 // Add Serilog to the builder
 
